@@ -10,6 +10,7 @@
 #include <fstream>
 #include "UnparseableDateException.h"
 #include <iostream>
+#include <stdarg.h>
 
 class Fuel {
 private:
@@ -90,6 +91,19 @@ public:
         for (const Fuel &f: athletes) {
             file << f.toString();
         }
+    }
+
+    static float avgPricePerLiter(int j, ...) {
+        va_list args; // variable arguments list
+        float arg, vsota = 0;
+        int k;
+        va_start(args, j); //set the last parameter before variable arguments list
+        for (k = 0; k < j; k++) {
+            arg = va_arg(args, double); // take one argument from variable arguments list
+            vsota += arg;
+        }
+        va_end(args); //End using variable argument list
+        return vsota / j;
     }
 
 };

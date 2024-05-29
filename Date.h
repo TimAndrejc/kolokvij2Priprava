@@ -24,7 +24,7 @@ public:
     static Date getDateFromString(std::string date) {
         int first = -1, second = -1;
 
-        for (int i = 0; i < strlen(date.c_str()); i++) {
+        for (int i = 0; i < date.size(); i++) {
             if (date[i] == '.') {
                 if (first == -1) {
                     first = i;
