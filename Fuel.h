@@ -11,6 +11,8 @@
 #include "UnparseableDateException.h"
 #include <iostream>
 #include <stdarg.h>
+#include "FileNotFoundException.h"
+#include <sstream>
 
 class Fuel {
 private:
@@ -41,42 +43,25 @@ public:
 
     static std::vector<Fuel> LoadFromFile(const std::string &fileName) {
         std::ifstream file(fileName);
+        if (!file) {
+            throw FileNotFoundException(fileName);
+        }
         std::vector<Fuel> fuel;
         std::string line;
-        int mileage;
-        float fuelAmount;
-        std::string type;
-        float price;
-        Date date(1, 1, 1);
-        int i = 0;
-        while (getline(file, line, ',')) {
-            switch (i) {
-                case 0:
-                    try {
-                        date = Date::getDateFromString(line);
-                    } catch (UnparseableDateException &e) {
-                        std::cout << e.what();
-                        date = Date(1, 1, 1);
-                    }
-                    i++;
-                    break;
-                case 1:
-                    mileage = std::stoi(line);
-                    i++;
-                    break;
-                case 2:
-                    fuelAmount = std::stof(line);
-                    i++;
-                    break;
-                case 3:
-                    type = type;
-                    i++;
-                    break;
-                case 4:
-                    price = std::stof(line);
-                    fuel.push_back(Fuel(date, mileage, fuelAmount, type, price));
-                    i = 0;
-                    break;
+
+
+        while (getline(file, line)) {
+            std::vector<std::string> temp;
+            std::istringstream ss(line);
+            std::string item;
+            while (getline(ss, item, ',')) {
+                temp.push_back(item);
+            }
+            try {
+                fuel.push_back(Fuel(Date::getDateFromString(temp[0]), std::stoi(temp[1]), std::stof(temp[2]), temp[3],
+                                    std::stof(temp[4])));
+            } catch (UnparseableDateException &e) {
+                std::cout << e.what();
             }
         }
         return fuel;
@@ -104,6 +89,13 @@ public:
         }
         va_end(args); //End using variable argument list
         return vsota / j;
+    }
+
+    friend std::ostream &operator<<(std::ostream &output, const std::vector<Fuel> &fuel) {
+        for (const Fuel &f: fuel) {
+            output << f.toString();
+        }
+        return output;
     }
 
 };

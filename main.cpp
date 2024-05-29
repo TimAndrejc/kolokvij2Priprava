@@ -18,15 +18,17 @@ bool descendingPricesPerLiter(const Fuel &refuel1, const Fuel &refuel2) {
 
 
 int main() {
-    vector<Fuel> fuel; //= Fuel::LoadFromFile("refuel.csv");
+    vector<Fuel> fuel;
+    try {
+        fuel = Fuel::LoadFromFile("refuel.csv");
+    } catch (FileNotFoundException &e) {
+        cout << e.what();
+    }
     fuel.emplace_back(Date(1, 5, 2024), 2300, 42.20, "Benzene", 23.22);
     fuel.emplace_back(Date(2, 6, 2025), 2300, 42.20, "Benzene", 23.23);
     Fuel::SortRefuels(fuel, descendingPricesPerLiter);
-    for (const Fuel &f: fuel) {
-        cout << f.toString();
-    }
-    Fuel::saveToFile(fuel, "neki.csv");
+    cout << fuel;
+    //Fuel::saveToFile(fuel, "neki.csv");
     //cout << Fuel::avgPricePerLiter(3, 1.23, 1.23, 1.23);
-
 
 }
